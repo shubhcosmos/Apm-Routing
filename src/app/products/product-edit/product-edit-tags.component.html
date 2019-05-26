@@ -21,10 +21,10 @@
                                             product.id !== 0) &&
                                             !categoryVar.valid }" />
           <span class="invalid-feedback">
-            <span *ngIf="categoryVar.errors?.required">
+            <span >
               A category must be entered.
             </span>
-            <span *ngIf="categoryVar.errors?.minlength">
+            <span >
               The category must be at least 3 characters in length.
             </span>
           </span>

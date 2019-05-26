@@ -22,10 +22,10 @@
                                             product.id !== 0) && 
                                             !productNameVar.valid }" />
           <span class="invalid-feedback">
-            <span *ngIf="productNameVar.errors?.required">
+            <span >
               Product name is required.
             </span>
-            <span *ngIf="productNameVar.errors?.minlength">
+            <span >
               Product name must be at least three characters.
             </span>
           </span>
@@ -49,7 +49,7 @@
                                             product.id !== 0) &&
                                             !productCodeVar.valid }" />
           <span class="invalid-feedback">
-            <span *ngIf="productCodeVar.errors?.required">
+            <span >
               Product code is required.
             </span>
           </span>

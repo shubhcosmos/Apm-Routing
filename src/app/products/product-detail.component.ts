@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { Product } from './product';
 import { ProductService } from './product.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, ResolveData } from '@angular/router';
 
 @Component({
   templateUrl: './product-detail.component.html',
@@ -14,10 +14,10 @@ export class ProductDetailComponent implements OnInit {
   errorMessage: string;
   constructor(private productService: ProductService, private actiRoute: ActivatedRoute , private router: Router) { }
   ngOnInit(): void {
-    const id = +this.actiRoute.snapshot.paramMap.get('id');
-    this.getProduct(id) ;
+const resolveddata: ResolveData = this.actiRoute.snapshot.data['product'];
 
-    throw new Error('Method not implemented.');
+this.errorMessage = resolveddata.error;
+this.onProductRetrieved(resolveddata.product) ;
   }
 
   edit() {
@@ -27,7 +27,7 @@ this.router.navigate(['/products' , id , 'edit']);
   }
 
   goBack() {
-this.router.navigate(['/products']) ;
+this.router.navigate(['/products'] , {queryParamsHandling: 'preserve'}) ;
   }
 
   getProduct(id: number) {

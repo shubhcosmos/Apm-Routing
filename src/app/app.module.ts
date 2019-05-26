@@ -11,11 +11,11 @@ import { WelcomeComponent } from './home/welcome.component';
 import { PageNotFoundComponent } from './page-not-found.component';
 
 /* Feature Modules */
-import { ProductModule } from './products/product.module';
+// import { ProductModule } from './products/product.module';
 import { UserModule } from './user/user.module';
 import { MessageModule } from './messages/message.module';
-import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 // import { appRoutes } from 'src/routes';
 
 @NgModule({
@@ -23,7 +23,8 @@ import { AppRoutingModule } from './app-routing.module';
     BrowserModule,
     HttpClientModule,
     InMemoryWebApiModule.forRoot(ProductData, { delay: 1000 }),
-    ProductModule,
+    BrowserAnimationsModule,
+   //  ProductModule, //will be lazy loaded remove its reference
     UserModule,
     MessageModule,
     AppRoutingModule
@@ -31,6 +32,7 @@ import { AppRoutingModule } from './app-routing.module';
   declarations: [
     AppComponent
   ],
+
   bootstrap: [AppComponent]
 })
 export class AppModule { }

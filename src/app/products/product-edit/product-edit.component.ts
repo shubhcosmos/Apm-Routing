@@ -4,7 +4,7 @@ import { MessageService } from '../../messages/message.service';
 
 import { Product } from '../product';
 import { ProductService } from '../product.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, ResolveData } from '@angular/router';
 
 @Component({
   templateUrl: './product-edit.component.html',
@@ -12,19 +12,45 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class ProductEditComponent implements OnInit {
 
-
+private dataIsvalid: {[key: string]: boolean} = { } ;
+private currentProduct: Product ;
+private originalProduct: Product ;
   constructor(private productService: ProductService,
-    private messageService: MessageService , private actiRoute: ActivatedRoute , private router: Router) { }
+    private messageService: MessageService , private actiRoute: ActivatedRoute , private router: Router) {
+
+    }
   pageTitle = 'Product Edit';
   errorMessage: string;
 
-  product: Product;
+  // product: Product;
+reset() {
+this.dataIsvalid = null ;
+this.currentProduct = null ;
+this.originalProduct = null ;
+
+}
+  get product(): Product {
+return this.currentProduct ;
+  }
+
+  get isDirty(): boolean {
+return JSON.stringify(this.currentProduct) !== JSON.stringify(this.originalProduct) ;
+  }
+
+  set product(value: Product) {
+this.currentProduct = value ;
+// spread operator used to clone
+this.originalProduct = {...value};
+  }
+
   ngOnInit(): void {
-    this.actiRoute.paramMap.subscribe(params => {
-const id = +params.get('id') ;
-this.getProduct(id) ;
-    } , err => console.log(err)
-    );
+    this.actiRoute.data.subscribe(data => {
+      const resolveddata: ResolveData = data['product'];
+
+      this.errorMessage = resolveddata.error;
+      this.onProductRetrieved(resolveddata.product) ;
+    });
+
 
   }
 
@@ -68,7 +94,7 @@ this.getProduct(id) ;
   }
 
   saveProduct(): void {
-    if (true === true) {
+    if (this.isVaild()) {
       if (this.product.id === 0) {
         this.productService.createProduct(this.product)
           .subscribe(
@@ -91,8 +117,40 @@ this.getProduct(id) ;
     if (message) {
       this.messageService.addMessage(message);
     }
+    this.reset() ;
     this.router.navigate(['/products']);
 
     // Navigate back to the product list
   }
+
+  validate() {
+this.dataIsvalid = {};
+
+
+if (this.product.productName && this.product.productName.length >= 3 && this.product.productCode ) {
+this.dataIsvalid['info'] = true ;
+
+} else {
+  this.dataIsvalid['info'] = false ;
+
+}
+
+if (this.product.category && this.product.category.length >= 3 ) {
+  this.dataIsvalid['tags'] = true ;
+
+  } else {
+    this.dataIsvalid['tags'] = false ;
+
+  }
+  }
+
+isVaild(path?: string) {
+this.validate() ;
+if (path) {
+return this.dataIsvalid[path] ;
+}
+
+return (this.dataIsvalid && Object.keys(this.dataIsvalid).every(d => this.dataIsvalid[d] === true));
+
+}
 }
